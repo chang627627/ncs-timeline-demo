@@ -872,7 +872,6 @@
   }
   .tb-btn:hover { background: rgba(255,255,255,0.1); color: #FDFDFC; }
   .tb-btn.on { background: #FDFDFC; color: #16160E; }
-  .tb-btn[hidden] { display: none; }
   .tb-div { width: 1px; height: 22px; background: rgba(255,255,255,0.16); margin: 0 6px; flex-shrink: 0; }
   .tb-btn .disc-count { position: absolute; top: -2px; right: -2px; background: #FDFDFC; color: #16160E; }
   body.recipient .tb-owner { display: none !important; }
@@ -926,8 +925,8 @@
   .iv-decline:hover { color: #16160E; }
   /* The onboarding guide — a quiet card pinned ABOVE the beats, so it never
      drifts away as the process populates below it. Numbered steps tick by
-     DOING (any order); one primary = the current step; foldable to a slim
-     bar the toolbar flag recalls. Same 584px column as the beats. */
+     DOING (any order); every row IS its action — no separate primary;
+     foldable to a slim bar in the same slot. Same 584px column as the beats. */
   .featured-ask {
     max-width: 584px; width: 100%; margin: 0 auto;
     border: 1px solid #EFEFEC; border-radius: 12px; background: #FDFDFC; padding: 16px 18px;
@@ -938,17 +937,16 @@
   .fa-progress { font-size: 11px; color: #7C7C7C; font-variant-numeric: tabular-nums; }
   .fa-hide { margin-left: auto; font-size: 12px; color: #A0A0A0; padding: 2px 4px; }
   .fa-hide:hover { color: #16160E; }
-  .fa-actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
-  .fa-primary {
-    display: inline-flex; align-items: center; gap: 7px; height: 40px; padding: 0 16px;
-    border-radius: 8px; background: #16160E; color: #FDFDFC; font-size: 13px; font-weight: 500;
-    transition: opacity 120ms ease;
-  }
-  .fa-primary:hover { opacity: 0.88; }
-  /* Numbered self-ticking rows — status first, but each row is also a quiet
-     action (jump to that step). Ticking happens by doing, never by reading. */
+  /* Numbered self-ticking rows — each row IS the action: tap to jump into
+     that step (the hover wash + chevron say so). Ticking still happens by
+     doing, never by reading. */
   .fa-list { margin-top: 10px; }
-  .fa-check { display: flex; align-items: center; gap: 10px; padding: 9px 0; width: 100%; text-align: left; }
+  .fa-check {
+    display: flex; align-items: center; gap: 10px; padding: 9px 8px;
+    width: calc(100% + 16px); margin: 0 -8px; text-align: left;
+    border-radius: 8px; transition: background-color 120ms ease;
+  }
+  .fa-check:hover { background: #F5F5F3; }
   .fa-check + .fa-check, .fa-examples + .fa-check { border-top: 1px solid #F5F5F2; }
   .fa-ring {
     width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #D5D5D0;
@@ -964,6 +962,9 @@
   .fa-label { font-size: 13px; color: #16160E; flex: 1; }
   .fa-check.done .fa-label { color: #A0A0A0; }
   .fa-note { font-size: 11px; color: #C0C0BC; }
+  .fa-go { flex-shrink: 0; color: #C0C0BC; display: flex; transition: transform 120ms ease, color 120ms ease; }
+  .fa-check:hover .fa-go { color: #7C7C7C; transform: translateX(2px); }
+  .fa-check.current .fa-go { color: #16160E; }
   /* Step 2's inline examples — what a process beat looks like; gone once the
      first real beat lands */
   .fa-examples { display: flex; align-items: center; gap: 8px; padding: 2px 0 10px 28px; }
@@ -1256,13 +1257,6 @@
   <div class="toolbar">
     <button class="tb-btn tb-owner" id="addPill" aria-label="Add content" title="Add — media, text, collab">
       <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
-    <!-- While the featured guide is live, the flag (with aggregate progress)
-         holds the + pill's slot — one primary CTA; adding flows through the
-         guide. The + returns the moment the guide completes. -->
-    <button class="tb-btn tb-owner" id="guideFlag" hidden aria-label="Ready to feature — open the guide" title="Ready to feature — your next step">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 22v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <span class="disc-count" id="guideFlagCount"></span>
     </button>
     <button class="tb-btn tb-owner" id="editPillBtn" aria-label="Edit project" title="Edit project">
       <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3H7.8c-1.7 0-2.5 0-3.2.3a3 3 0 00-1.3 1.3C3 5.3 3 6.1 3 7.8v8.4c0 1.7 0 2.5.3 3.2a3 3 0 001.3 1.3c.6.3 1.5.3 3.2.3h8.4c1.7 0 2.5 0 3.2-.3a3 3 0 001.3-1.3c.3-.6.3-1.5.3-3.2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -2052,49 +2046,46 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
 
     // The featured ask — the onboarding guide. Numbered steps that tick
     // themselves by DOING, never by reading (Front's setup-guide pattern, in
-    // NCS voice): confirm the claim, add the process, say what changed,
-    // publish No. 001 (the handoff). PINNED ABOVE the beats so it never
-    // drifts away as the process populates below it; one adaptive primary =
-    // the current step; rows are quiet jump-to-step actions; the author can
-    // fold it to a slim bar (the toolbar flag recalls it). The card is state,
+    // NCS voice): add the process, say what changed, publish No. 001 (the
+    // handoff). PINNED ABOVE the beats so it never
+    // drifts away as the process populates below it; every row IS its action
+    // (tap a step to jump into it — no separate primary button); the author
+    // can fold it to a slim bar in the same slot (the bar is the recall — the
+    // bottom toolbar never changes). The card is state,
     // not a nag: it's gone for good once the job is done.
     if (FEATURED && !RECIPIENT) {
-      const c0 = !!state.infoConfirmed;
       const c1 = items().length > 1; // beats beyond the collected final
-      const c2 = (state.changesOverride[FEATURED_FINAL] ?? '') !== FEATURED_PROVENANCE;
+      // "Say what changed" needs the author's words on ANY ONE image — the
+      // collected final or an added beat, whichever they annotate first.
+      // Seeded text never counts: not the final's provenance note, not the
+      // double-click-to-write placeholder an added image starts with.
+      const c2 = items().some((it) => {
+        const t = state.changesOverride[it.id];
+        return it.kind === 'image' && t != null && t.trim() !== ''
+          && t !== it.changes && t !== FEATURED_PROVENANCE;
+      });
       const c3 = state.updates.length > 0;
-      const complete = c0 && c2 && c3 && (c1 || !FEATURED_CAN_ADD);
+      const complete = c2 && c3 && (c1 || !FEATURED_CAN_ADD);
       const openAdd = () => {
         const m = $('addMenu'); m.hidden = false;
         m.scrollIntoView({ behavior: 'smooth', block: 'center' });
       };
-      const editFinal = () => {
+      // Jump into the nearest Changes editor — the newest image beat (added
+      // ones render first), falling back to the final. Any one image is enough.
+      const editChanges = () => {
         const beat = document.querySelector('.titem [data-act="edit-changes"]');
-        if (beat) beat.click(); else toast('Open the final’s Changes card to edit its note');
+        if (beat) beat.click(); else toast('Open any image’s Changes card to write its note');
       };
       // The suggested order — but every step ticks independently, in any
       // order. This is a guide, never a gate.
       const steps = [
-        { done: c0, label: 'Confirm it’s yours', act: () => openInviteModal(), cta: 'Confirm it’s yours' },
-        { done: c1 || !FEATURED_CAN_ADD, label: 'Add the process behind the final', act: openAdd, cta: 'Add your first beat', plus: true, note: FEATURED_CAN_ADD ? '' : 'uploads disabled in this export' },
-        { done: c2, label: 'Say what changed, in your own words', act: editFinal, cta: 'Say what changed' },
-        { done: c3, label: 'Publish update No. 001 — the handoff', act: () => openUpdateModal(), cta: 'Publish update No. 001' },
+        { done: c1 || !FEATURED_CAN_ADD, label: 'Add the process behind the final', act: openAdd, note: FEATURED_CAN_ADD ? '' : 'uploads disabled in this export' },
+        { done: c2, label: 'Say what changed, in your own words', act: editChanges, note: 'one image is enough' },
+        { done: c3, label: 'Publish update No. 001 — the handoff', act: () => openUpdateModal() },
       ];
       const doneN = steps.filter((s) => s.done).length;
       const current = steps.find((s) => !s.done);
-      // Toolbar swap: while the guide is live the flag (aggregate progress)
-      // holds the + pill's slot — one primary CTA on screen, and adding flows
-      // through the guide's steps. The + returns once the guide completes.
-      const flag = $('guideFlag');
-      $('addPill').hidden = !complete;
-      flag.hidden = complete;
       if (!complete) {
-        $('guideFlagCount').textContent = doneN + '/4';
-        flag.onclick = () => {
-          if (state.guideHidden) { state.guideHidden = false; save(); buildTimeline(); }
-          const g = document.querySelector('.featured-ask');
-          if (g) g.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
-        };
         const ask = document.createElement('div');
         ask.className = 'featured-ask';
         const flagIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 22v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -2103,7 +2094,7 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
           ask.innerHTML = `
             <button class="fa-collapsed" data-fa-expand>
               ${flagIcon}<b>Ready to feature</b>
-              <span class="fa-progress">${doneN} / 4</span>
+              <span class="fa-progress">${doneN} / 3</span>
               <span class="fa-show">Show guide</span>
             </button>`;
           ask.querySelector('[data-fa-expand]').onclick = () => { state.guideHidden = false; save(); buildTimeline(); };
@@ -2114,6 +2105,7 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
               <span class="fa-ring">${s.done ? check : `<span class="fa-num">${n + 1}</span>`}</span>
               <span class="fa-label">${s.label}</span>
               ${s.note ? `<span class="fa-note">${s.note}</span>` : ''}
+              <span class="fa-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </button>`;
           // Step 2's inline examples — real beats from a finished story, so
           // "add your process" has a picture; gone once the first beat lands.
@@ -2125,27 +2117,18 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
           ask.innerHTML = `
             <div class="fa-head">
               <span class="sb-eyebrow" style="margin:0">Ready to feature</span>
-              <span class="fa-progress">${doneN} / 4</span>
+              <span class="fa-progress">${doneN} / 3</span>
               <button class="fa-hide" data-fa-hide>Hide</button>
             </div>
             <p>This story holds only your final — <b>it’s featured once the process
             is in</b>. That’s what the community sees: how you work and think.</p>
             <div class="fa-list">
-              ${row(steps[0], 0)}${row(steps[1], 1)}${examples}${row(steps[2], 2)}${row(steps[3], 3)}
+              ${row(steps[0], 0)}${examples}${row(steps[1], 1)}${row(steps[2], 2)}
             </div>
-            <p class="fa-own">The story is fully yours — everything stays editable after you publish.</p>
-            <div class="fa-actions">
-              <button class="fa-primary" data-fa-next>
-                ${current.plus ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' : ''}
-                ${current.cta}
-              </button>
-            </div>`;
+            <p class="fa-own">The story is fully yours — everything stays editable after you publish.</p>`;
           ask.querySelector('[data-fa-hide]').onclick = () => { state.guideHidden = true; save(); buildTimeline(); };
-          ask.querySelector('[data-fa-next]').onclick = current.act;
           ask.querySelectorAll('[data-fa-step]').forEach((b) => (b.onclick = () => {
-            const s = steps[+b.dataset.faStep];
-            if (s === steps[0] && s.done) return; // the claim doesn't replay
-            s.act();
+            steps[+b.dataset.faStep].act();
           }));
         }
         stack.prepend(ask);
