@@ -445,27 +445,6 @@
   }
   .btn-quiet { font-size: 13px; font-weight: 500; color: #7C7C7C; padding: 8px 12px; border-radius: 8px; }
 
-  /* Assemble prompt */
-  .assemble { margin-top: 16px; }
-  .assemble-row { display: flex; align-items: center; gap: 10px; }
-  .btn-accent {
-    font-size: 12px; font-weight: 500; color: #203E00;
-    background: rgba(32,62,0,0.10); border: 1px solid rgba(32,62,0,0.25);
-    padding: 6px 14px; border-radius: 8px;
-  }
-  .btn-accent.ghost { color: #7C7C7C; background: transparent; border-color: rgba(124,124,124,0.3); }
-  .assemble-panel {
-    margin-top: 12px; max-width: 720px;
-    border: 1px solid rgba(22,22,14,0.12); border-radius: 12px;
-    background: #FDFDFC; padding: 16px 18px; display: none;
-  }
-  .assemble-panel.open { display: block; }
-  .assemble-note { font-size: 11px; color: #7C7C7C; margin-bottom: 10px; }
-  .assemble-panel pre {
-    white-space: pre-wrap; word-break: break-word; font-size: 12.5px;
-    line-height: 1.55; font-family: inherit; max-height: 420px; overflow-y: auto;
-  }
-
   /* View toggle */
   .view-toggle { display: flex; gap: 4px; margin-top: 20px; }
   .view-toggle button {
@@ -706,7 +685,6 @@
   /* A share-link visitor can look, react, and discuss — never author. */
   body.recipient #shareUpdateBtn,
   body.recipient #copyViewBtn,
-  body.recipient .assemble,
   body.recipient .problem-edit,
   body.recipient .card-actions,
   body.recipient .inspired-edit,
@@ -965,6 +943,15 @@
   .fa-go { flex-shrink: 0; color: #C0C0BC; display: flex; transition: transform 120ms ease, color 120ms ease; }
   .fa-check:hover .fa-go { color: #7C7C7C; transform: translateX(2px); }
   .fa-check.current .fa-go { color: #16160E; }
+  /* Stage legibility: only the CURRENT step reads full-strength — upcoming
+     steps sit back, shadowed, until it's their turn. Still tappable (any
+     order remains allowed); hover brings one forward. */
+  .fa-check:not(.done):not(.current) .fa-label { color: #A0A0A0; }
+  .fa-check:not(.done):not(.current) .fa-ring { border-color: #E4E4E0; }
+  .fa-check:not(.done):not(.current) .fa-num { color: #C4C4C0; }
+  .fa-check:not(.done):not(.current) .fa-go { color: #DFDFDB; }
+  .fa-check:not(.done):not(.current):hover .fa-label { color: #16160E; }
+  .fa-check:not(.done):not(.current):hover .fa-go { color: #7C7C7C; }
   /* Step 2's inline examples — what a process beat looks like; gone once the
      first real beat lands */
   .fa-examples { display: flex; align-items: center; gap: 8px; padding: 2px 0 10px 28px; }
@@ -1216,21 +1203,6 @@
 
       <div id="problemMount"></div>
 
-      <div class="assemble">
-        <div class="assemble-row">
-          <button class="btn-accent" id="assembleBtn">Assemble prototype prompt</button>
-          <button class="btn-accent" id="assembleCopy" style="display:none">Copy</button>
-          <button class="btn-accent ghost" id="assembleClose" style="display:none">Close</button>
-        </div>
-        <div class="assemble-panel" id="assemblePanel">
-          <div class="assemble-note">
-            Assembled from your captures — themes, research, and your voice notes verbatim with provenance.
-            Paste it into your prototyping tool.
-          </div>
-          <pre id="assembleText"></pre>
-        </div>
-      </div>
-
       <div class="view-toggle" role="tablist" aria-label="Process views">
         <button id="viewTimeline" class="active">
           <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 5h18M3 12h18M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1449,7 +1421,7 @@ const MOCK = {
   // "Inspired by" strip at the side of the work iteration they informed — by
   // default the nearest NEWER non-role, non-killed image item; set
   // `informs: '<itemId>'` to pick a different host. They still feed the
-  // Moodboard tab and the assembled prompt. An inspiration's MEDIUM is
+  // Moodboard tab. An inspiration's MEDIUM is
   // detected from its content, never declared: `img` → image tile, `text` →
   // note tile (click to read), else `originUrl` → link tile (click to open).
   items: [
@@ -2372,51 +2344,6 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
       $('problemSave').onclick = () => { state.problem = ta.value.trim(); save(); renderProblem(); };
       $('problemCancel').onclick = renderProblem;
     };
-  }
-
-  /* ==================================================================
-     ASSEMBLE PROMPT (fake — built from the mock data)
-     ================================================================== */
-  function assembledPrompt() {
-    const rats = MOCK.items.filter((i) => i.rationale && !state.deleted.includes(i.id));
-    const inspo = MOCK.items.filter((i) => i.role && !state.deleted.includes(i.id));
-    return [
-      'PROTOTYPE PROMPT — Wayfinder (assembled from process captures)',
-      '',
-      'PROBLEM',
-      state.problem,
-      '',
-      'THEMES ACROSS INSPIRATION (' + inspo.length + ' captures)',
-      '- Outdoor-gear softness: 16px radii, matte surfaces, no glass',
-      '- Trail-first linearity: progress as a ribbon, map as a peek',
-      '- Sunlight-legible: 2px min strokes, no shadows, tabular figures',
-      '',
-      'DESIGNER’S OWN WORDS (voice notes, verbatim)',
-      ...rats.map((i) => `- “${i.rationale}”  (Iteration, ${i.id})`),
-      '',
-      'BUILD',
-      'One screen: the trail ribbon. Elevation profile as the spine, sticky mile',
-      'markers, corner dial bottom-right, battery-to-trailhead estimate in the',
-      'header. Offline is the default state — never an error.',
-    ].join('\n');
-  }
-  function wireAssemble() {
-    const btn = $('assembleBtn'), panel = $('assemblePanel'), copyB = $('assembleCopy'), closeB = $('assembleClose');
-    btn.onclick = () => {
-      btn.textContent = 'Assembling…'; btn.disabled = true; btn.style.opacity = 0.6;
-      setTimeout(() => {
-        $('assembleText').textContent = assembledPrompt();
-        panel.classList.add('open');
-        copyB.style.display = closeB.style.display = '';
-        btn.textContent = 'Assemble prototype prompt'; btn.disabled = false; btn.style.opacity = 1;
-      }, 900);
-    };
-    copyB.onclick = () => {
-      navigator.clipboard.writeText($('assembleText').textContent);
-      copyB.textContent = 'Copied ✓';
-      setTimeout(() => (copyB.textContent = 'Copy'), 1600);
-    };
-    closeB.onclick = () => { panel.classList.remove('open'); copyB.style.display = closeB.style.display = 'none'; };
   }
 
   /* ==================================================================
@@ -3551,7 +3478,6 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
     $('projDesc').textContent = MOCK.project.description;
 
     renderProblem();
-    wireAssemble();
     buildTimeline();
     buildMoodboard();
     renderSidebar();
