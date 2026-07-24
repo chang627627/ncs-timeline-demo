@@ -287,33 +287,27 @@
   }
   .add-card:hover { background: rgba(255,255,255,0.1); color: #FDFDFC; }
 
-  /* Share modal — two tiers */
-  .share-card { width: min(460px, 92vw); }
+  /* Share modal — collaboration only; portrait card, taller than wide
+     (double class outranks the later .umodal-card width) */
+  .umodal-card.share-card { width: min(400px, 92vw); }
   .share-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px 4px; }
   .share-body { padding: 8px 20px 16px; }
-  /* Quiet view-link row — deliberately secondary to the collaborate flow */
-  .share-viewrow {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 12px 20px 16px; border-top: 1px solid #EFEFEC;
-  }
-  .sv-text { font-size: 12px; color: #7C7C7C; line-height: 1.5; }
-  .sv-text b { font-weight: 500; color: #16160E; }
-  .sv-copy {
-    flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
-    font-size: 12px; font-weight: 500; color: #16160E;
-    border: 1px solid #DFDFDF; border-radius: 7px; padding: 6px 11px;
-    transition: border-color 120ms ease, color 120ms ease;
-  }
-  .sv-copy:hover { border-color: #C4C4C4; }
-  .sv-copy.done { color: #203E00; border-color: rgba(32,62,0,0.4); }
   .sb-desc { font-size: 13px; color: #7C7C7C; line-height: 1.55; margin: 8px 0 14px; }
   .sb-eyebrow { font-size: 11px; font-weight: 500; color: #7C7C7C; text-transform: uppercase; letter-spacing: 0.06em; }
-  .sb-expiry { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
-  .sb-exp {
-    font-size: 12px; color: #16160E; padding: 6px 12px; border-radius: 999px;
-    border: 1px solid #EAEAEA; transition: border-color 120ms ease, background-color 120ms ease;
+  .sb-opts { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 16px; }
+  .sb-opt {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px;
+    border: 1px solid #EAEAEA; background: #FFFFFF;
+    transition: border-color 120ms ease, background-color 120ms ease;
   }
-  .sb-exp.on { border-color: rgba(32,62,0,0.4); background: rgba(32,62,0,0.06); color: #203E00; font-weight: 500; }
+  .sb-opt:hover { border-color: #D5D5D0; }
+  .sb-opt-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .sb-opt .t { font-size: 13px; font-weight: 500; color: #16160E; }
+  .sb-opt .s { font-size: 12px; color: #7C7C7C; }
+  .sb-opt.on { border-color: rgba(32,62,0,0.4); background: rgba(32,62,0,0.06); }
+  .sb-opt.on .t { color: #203E00; }
+  .sb-opt svg { flex-shrink: 0; }
   .sb-gen {
     margin-top: 14px; width: 100%; height: 40px; border-radius: 8px;
     background: #16160E; color: #FDFDFC; font-size: 13px; font-weight: 500;
@@ -332,11 +326,31 @@
     display: flex; align-items: center; gap: 5px;
   }
   .sb-copy.done { color: #203E00; background: rgba(32,62,0,0.08); }
-  .sb-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  /* share-foot, not sb-foot — .sb-foot is a different component (line ~924)
+     whose button rule would override these */
+  .share-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
   .sb-preview { font-size: 12px; color: #7C7C7C; display: inline-flex; align-items: center; gap: 5px; }
   .sb-preview:hover { color: #203E00; }
   .sb-again { font-size: 12px; color: #7C7C7C; }
   .sb-again:hover { color: #16160E; }
+  .sb-banner {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: rgba(32,62,0,0.06); border: 1px solid rgba(32,62,0,0.12);
+    border-radius: 10px; padding: 14px 16px; margin: 6px 0 16px;
+  }
+  .sb-banner svg { flex-shrink: 0; margin-top: 1px; }
+  .sb-banner-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .sb-banner .t { font-size: 14px; font-weight: 500; color: #203E00; }
+  .sb-banner .s { font-size: 12px; color: #7C7C7C; }
+  .share-foot-actions { display: inline-flex; align-items: center; gap: 8px; }
+  .sb-preview-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500; color: #16160E;
+    border: 1px solid #DFDFDF; border-radius: 8px; padding: 8px 14px;
+    transition: border-color 120ms ease;
+  }
+  .sb-preview-btn:hover { border-color: #C4C4C4; }
+  .sb-done { font-size: 13px; font-weight: 500; color: #FDFDFC; background: #16160E; border-radius: 8px; padding: 8px 16px; }
   .umodal-card {
     width: min(660px, 92vw); max-height: calc(100dvh - 80px);
     background: #FDFDFC; border-radius: 12px; display: flex; flex-direction: column;
@@ -518,11 +532,12 @@
     display: flex; flex-direction: column; gap: 12px;
   }
   .changes-head { display: flex; align-items: center; gap: 8px; }
-  .changes-head img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; }
   .changes-head h2 { font-size: 13px; font-weight: 500; color: #7C7C7C; line-height: 1.4; flex: 1; }
   .card-actions { display: flex; align-items: center; gap: 10px; }
   .card-actions button { padding: 0; display: flex; color: #7C7C7C; }
   .card-actions button:hover.danger { color: #C0392B; }
+  /* Armed trash — the in-page stand-in for confirm(): red until it disarms */
+  .card-actions button.danger.armed, button.danger.armed { color: #C0392B; }
   .changes-body { display: flex; flex-direction: column; gap: 8px; }
   .changes-proj { font-size: 12px; color: #7C7C7C; line-height: 1.4; }
   .changes-text { font-size: 13px; color: #16160E; line-height: 1.6; border-radius: 4px; padding: 4px 6px; margin: -4px -6px; cursor: text; }
@@ -689,9 +704,8 @@
 
   /* ============ Recipient view (?view=recipient) ============ */
   /* A share-link visitor can look, react, and discuss — never author. */
-  body.recipient .add-pill,
-  body.recipient .edit-pill,
   body.recipient #shareUpdateBtn,
+  body.recipient #copyViewBtn,
   body.recipient .assemble,
   body.recipient .problem-edit,
   body.recipient .card-actions,
@@ -839,29 +853,103 @@
   body.view-moodboard .stack { display: none; }
   body.view-moodboard .moodboard { display: block; }
 
-  /* ============ Bottom pills ============ */
-  .add-pill {
+  /* ============ Bottom toolbar — one instrument (Figma-style) ============
+     Every floating bottom control lives in ONE bar: owner tools (add, edit)
+     | divider | conversation (respond, discussion). Active mode = filled
+     tile, hover = soft wash — same grammar as the Figma toolbar. */
+  .toolbar {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 50;
-    width: 184px; height: 48px; border-radius: 12px;
-    background: rgba(22,22,14,0.95); color: #FDFDFC;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: center; gap: 2px; padding: 6px;
+    border-radius: 14px; background: rgba(22,22,14,0.95);
     box-shadow: 0px 36px 10px rgba(125,139,117,0), 0px 23px 9px rgba(125,139,117,0.01),
       0px 13px 8px rgba(125,139,117,0.05), 0px 6px 6px rgba(125,139,117,0.09),
       0px 1px 3px rgba(125,139,117,0.1);
   }
-  .edit-pill {
-    position: fixed; left: calc(50% + 108px); bottom: 48px; transform: translateY(50%); z-index: 51;
-    background: #FDFDFC; border: 1px solid #DFDFDF; border-radius: 12px;
-    padding: 0 8px; height: 48px; display: flex; align-items: center;
-    box-shadow: 0px 36px 10px rgba(125,139,117,0), 0px 23px 9px rgba(125,139,117,0.01),
-      0px 13px 8px rgba(125,139,117,0.05), 0px 6px 6px rgba(125,139,117,0.09),
-      0px 1px 3px rgba(125,139,117,0.1);
-  }
-  .edit-pill button {
-    padding: 4px 8px; color: #7C7C7C; border-radius: 6px; display: flex;
+  .tb-btn {
+    position: relative; width: 40px; height: 40px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center; color: #C8C8C0;
     transition: background-color 150ms ease, color 150ms ease;
   }
-  .edit-pill button:hover { background: #EAEAEA; color: #16160E; }
+  .tb-btn:hover { background: rgba(255,255,255,0.1); color: #FDFDFC; }
+  .tb-btn.on { background: #FDFDFC; color: #16160E; }
+  .tb-div { width: 1px; height: 22px; background: rgba(255,255,255,0.16); margin: 0 6px; flex-shrink: 0; }
+  .tb-btn .disc-count { position: absolute; top: -2px; right: -2px; background: #FDFDFC; color: #16160E; }
+  body.recipient .tb-owner { display: none !important; }
+
+  /* ============ Edit project — labeled fields, one visible Save ============ */
+  .ep-field { margin: 8px 0 16px; }
+  .ep-field input, .ep-field textarea {
+    width: 100%; padding: 10px 12px; font-size: 13px; color: #16160E; line-height: 1.5;
+    background: #FFFFFF; border: 1px solid #DFDFDF; border-radius: 8px; outline: none;
+    font-family: inherit; transition: border-color 120ms ease;
+  }
+  .ep-field textarea { resize: vertical; min-height: 84px; }
+  .ep-field input:focus, .ep-field textarea:focus { border-color: #16160E; }
+  .sb-done:disabled { opacity: 0.35; cursor: default; }
+  /* People — the admin is permanent, collaborators are removable */
+  .ep-people { margin: 8px 0 16px; border: 1px solid #EFEFEC; border-radius: 8px; padding: 2px 12px; }
+  .ep-person { display: flex; align-items: center; gap: 10px; padding: 9px 0; }
+  .ep-person + .ep-person { border-top: 1px solid #F0F0ED; }
+  .ep-person img { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; }
+  .ep-who { font-size: 13px; font-weight: 500; color: #16160E; }
+  .ep-role { font-size: 12px; color: #7C7C7C; flex: 1; }
+  .ep-remove { font-size: 12px; color: #7C7C7C; }
+  .ep-remove:hover { color: #C0392B; }
+  .ep-empty { font-size: 12px; color: #A0A0A0; }
+  /* Cover image — pick which image fronts the story on the listing page */
+  .ep-hint { display: block; font-size: 12px; color: #A0A0A0; margin: 2px 0 0; }
+  .ep-cover {
+    position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 16px;
+    /* Explicit row height — aspect-ratio tiles stop sizing grid rows once the
+       container scrolls (rows collapse and tiles overlap), so the row, not
+       the tile, owns the height. */
+    grid-auto-rows: 84px;
+    /* two rows + a peek of the third — the peek IS the scroll affordance */
+    max-height: 196px; overflow-y: auto;
+  }
+  .ep-img {
+    position: relative; height: 84px; border-radius: 8px; overflow: hidden;
+    border: 1px solid #EFEFEC; padding: 0; transition: border-color 120ms ease;
+  }
+  .ep-img:hover { border-color: #A0A0A0; }
+  .ep-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ep-img.sel { outline: 2px solid #203E00; outline-offset: -2px; border-color: #203E00; }
+  .ep-img .ep-check { position: absolute; top: 4px; right: 4px; display: flex; }
+
+  /* ============ Featured-designer flow (?flow=featured) ============ */
+  /* The invite leads with recognition — the collected final, then the ask */
+  .iv-final { margin: 6px 0 14px; border-radius: 10px; overflow: hidden; border: 1px solid #EFEFEC; }
+  .iv-final img { width: 100%; height: 170px; object-fit: cover; display: block; }
+  .iv-meta { font-size: 12px; color: #A0A0A0; margin: 0 0 14px; }
+  .iv-decline { width: 100%; margin-top: 8px; height: 36px; font-size: 13px; color: #7C7C7C; }
+  .iv-decline:hover { color: #16160E; }
+  /* The day-after ask under the lone final — boxless, quiet, and in the
+     same 584px column as the beats above it */
+  .featured-ask { max-width: 584px; width: 100%; margin: 12px auto 48px; }
+  .featured-ask p { font-size: 13px; color: #7C7C7C; line-height: 1.6; margin-top: 6px; max-width: 52ch; }
+  .featured-ask b { font-weight: 500; color: #16160E; }
+  .fa-actions { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .fa-primary {
+    display: inline-flex; align-items: center; gap: 7px; height: 40px; padding: 0 16px;
+    border-radius: 8px; background: #16160E; color: #FDFDFC; font-size: 13px; font-weight: 500;
+    transition: opacity 120ms ease;
+  }
+  .fa-primary:hover { opacity: 0.88; }
+  /* The self-ticking checklist rows — status, not buttons */
+  .fa-list { margin-top: 12px; }
+  .fa-check { display: flex; align-items: center; gap: 10px; padding: 9px 0; }
+  .fa-check + .fa-check { border-top: 1px solid #F5F5F2; }
+  .fa-ring {
+    width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #D5D5D0;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+  .fa-check.done .fa-ring { background: #203E00; border-color: #203E00; }
+  .fa-label { font-size: 13px; color: #16160E; flex: 1; }
+  .fa-check.done .fa-label { color: #A0A0A0; }
+  .fa-note { font-size: 11px; color: #C0C0BC; }
+  /* The edit modal can outgrow the viewport — its body scrolls, head stays */
+  .umodal-card .share-body { overflow-y: auto; min-height: 0; }
   .tool-hint {
     position: fixed; bottom: 4px; left: 50%; transform: translateX(-50%); z-index: 44;
     font-size: 12px; color: #7C7C7C; background: rgba(253,253,252,0.9);
@@ -870,22 +958,6 @@
   body[data-tool] .tool-hint { display: block; }
 
   /* ============ Discussion ============ */
-  /* Conversation pills — Respond and Discussion share one bottom-right row
-     and one design language */
-  .fab-row {
-    position: fixed; bottom: 24px; right: 24px; z-index: 50;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .disc-toggle {
-    display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px;
-    border-radius: 22px; border: 1px solid #EAEAEA; background: #fff;
-    box-shadow: 0px 7px 14px rgba(22,22,14,0.08), 0px 2px 4px rgba(22,22,14,0.06);
-    font-size: 13px; font-weight: 500;
-    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
-  }
-  .disc-toggle .icon { color: #203E00; }
-  .respond-toggle.on { background: #16160E; color: #FDFDFC; border-color: #16160E; }
-  .respond-toggle.on .icon { color: #FDFDFC; }
   .disc-count {
     min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
     background: #203E00; color: #fff; font-size: 11px; font-weight: 600;
@@ -1088,11 +1160,16 @@
         <span class="author">
           <img id="authorAvatar" alt="" />
           <span id="authorHandle"></span>
+          <span id="collabCredit" hidden></span>
         </span>
         <span class="badge-public">Public</span>
         <span style="flex:1"></span>
         <span class="share-cluster">
           <button class="hbtn" id="followBtn">Follow</button>
+          <!-- The quiet "show someone" act: copies the live view link, tells
+               no one. Invites live in + · Collab; broadcasting in Share
+               update — three speech acts, three controls. -->
+          <button class="hbtn" id="copyViewBtn">Copy link</button>
           <span class="updates-wrap">
             <button class="hbtn" id="updatesBtn">Updates<span class="u-badge" id="updatesBadge" hidden></span></button>
             <div class="updates-panel" id="updatesPanel" hidden></div>
@@ -1140,9 +1217,25 @@
   <div class="tool-hint" id="toolHint"></div>
   <div class="spot-composer" id="spotComposer" hidden></div>
 
-  <button class="add-pill" id="addPill" aria-label="Add content">
-    <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-  </button>
+  <!-- Bottom toolbar — the ONLY floating chrome along the bottom edge.
+       Owner tools | divider | conversation; recipients get just the
+       conversation half (.tb-owner hides). -->
+  <div class="toolbar">
+    <button class="tb-btn tb-owner" id="addPill" aria-label="Add content" title="Add — media, text, collab">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="tb-btn tb-owner" id="editPillBtn" aria-label="Edit project" title="Edit project">
+      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3H7.8c-1.7 0-2.5 0-3.2.3a3 3 0 00-1.3 1.3C3 5.3 3 6.1 3 7.8v8.4c0 1.7 0 2.5.3 3.2a3 3 0 001.3 1.3c.6.3 1.5.3 3.2.3h8.4c1.7 0 2.5 0 3.2-.3a3 3 0 001.3-1.3c.3-.6.3-1.5.3-3.2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <span class="tb-div tb-owner"></span>
+    <button class="tb-btn" id="toolRespond" aria-label="Respond (C)" title="Respond (C)">
+      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M9 9.5h.01M15 9.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M8.5 14a4.5 4.5 0 007 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="tb-btn" id="discToggle" aria-label="Discussion" title="Discussion">
+      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 10h.01M12 10h.01M16 10h.01M12 21a9 9 0 10-8-4.9L3 21l4.9-1A9 9 0 0012 21z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="disc-count" id="discCount"></span>
+    </button>
+  </div>
 
   <!-- Add menu (Media / Text / Collab), opened by the + pill -->
   <div class="add-menu" id="addMenu" hidden>
@@ -1159,8 +1252,13 @@
       <span>Collab</span>
     </button>
   </div>
+  <input type="file" id="mediaInput" accept="image/*" hidden>
 
-  <!-- Share modal — two tiers (Figma-style): invite to collaborate (edit) vs share the process (view) -->
+  <!-- Share modal — collaboration only: an invite link for one designer.
+       Opening it grants nothing — accepting the invite is what opens edit
+       access (credited by name) — and the expiry is how long the invite
+       waits. Viewing needs no link tier (the page itself is the view);
+       broadcasting lives in Share update, not here. -->
   <div class="umodal share-modal" id="shareModal" hidden>
     <div class="umodal-card share-card">
       <div class="share-head">
@@ -1173,36 +1271,43 @@
         </button>
       </div>
       <div class="share-body" id="shareBody"></div>
-      <!-- The view link is deliberately lightweight — the desktop app's share
-           covers view/react/comment; this is just a quiet manual fallback.
-           Broadcasting to followers lives in Share update, not here. -->
-      <div class="share-viewrow">
-        <span class="sv-text">Just want to show it? <b>View-only link</b> — react and comment, never edit.</span>
-        <button class="sv-copy" id="svCopy">
-          <svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/></svg>
-          Copy view link
-        </button>
-      </div>
     </div>
   </div>
-  <div class="edit-pill">
-    <button id="editPillBtn" aria-label="Edit project">
-      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18.5 2.5a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3H7.8c-1.7 0-2.5 0-3.2.3a3 3 0 00-1.3 1.3C3 5.3 3 6.1 3 7.8v8.4c0 1.7 0 2.5.3 3.2a3 3 0 001.3 1.3c.6.3 1.5.3 3.2.3h8.4c1.7 0 2.5 0 3.2-.3a3 3 0 001.3-1.3c.3-.6.3-1.5.3-3.2V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
+  <!-- Invite accept — what an #invite- link opens. Opening grants nothing:
+       accepting is the deliberate act that opens edit access and puts the
+       recipient's name in the credit line. -->
+  <div class="umodal share-modal" id="inviteModal" hidden>
+    <div class="umodal-card share-card">
+      <div class="share-head">
+        <div>
+          <div class="um-eyebrow">Invite</div>
+          <h2 class="um-title" id="inviteTitle"></h2>
+        </div>
+        <button class="um-x" id="inviteClose" aria-label="Close">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 7L7 17M7 7l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="share-body" id="inviteBody"></div>
+    </div>
   </div>
-
-  <div class="fab-row">
-    <button class="disc-toggle respond-toggle" id="toolRespond" aria-label="Respond (C)" title="Respond (C)">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M9 9.5h.01M15 9.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M8.5 14a4.5 4.5 0 007 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Respond
-    </button>
-    <button class="disc-toggle" id="discToggle">
-      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 10h.01M12 10h.01M16 10h.01M12 21a9 9 0 10-8-4.9L3 21l4.9-1A9 9 0 0012 21z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Discussion
-      <span class="disc-count" id="discCount"></span>
-    </button>
+  <!-- Edit project — our version of the concepts-file EDIT PROJECT page,
+       scoped to the identity fields the demo owns (name, description).
+       Real labels, one visible Save; the problem statement keeps its
+       inline Edit on the page itself. -->
+  <div class="umodal share-modal" id="editModal" hidden>
+    <div class="umodal-card share-card">
+      <div class="share-head">
+        <div>
+          <div class="um-eyebrow">Project</div>
+          <h2 class="um-title">Edit project</h2>
+        </div>
+        <button class="um-x" id="editClose" aria-label="Close">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 7L7 17M7 7l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="share-body" id="editBody"></div>
+    </div>
   </div>
-
   <!-- Discussion sidebar -->
   <aside class="sidebar" id="sidebar" aria-label="Discussion">
     <div class="sb-head">
@@ -1411,7 +1516,19 @@ const MOCK = {
 // (👀 was dropped: a maker can't tell warmth from side-eye on their own work.)
 const STAMP_GLYPHS = ['👍', '❤️', '🔥'];
 const MAX_CITES = 6; // Inspired-by cap: 3 per row, max 2 rows
-const STORE_KEY = 'ncs-timeline-demo-v1';
+// Featured-designer staging (?flow=featured): NCS saw the designer's work on
+// X, collected the FINAL into a fresh project, and invited them to add the
+// process behind it. Its own store key — the staging never touches the main
+// demo's saved state.
+const FEATURED = new URLSearchParams(location.search).get('flow') === 'featured';
+const FEATURED_FINAL = 'm20'; // the collected final output
+// The provenance note the staging seeds onto the final — the "say what
+// changed" checklist step counts as done once the author replaces it.
+const FEATURED_PROVENANCE = 'Collected from X — the final as we found it. Replace this note with your own words.';
+// Adding beats (media + text) is live in this build — the checklist's
+// add-your-process step completes for real.
+const FEATURED_CAN_ADD = true;
+const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-demo-v1';
 </script>
 
 <script>
@@ -1500,6 +1617,15 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
   // series (never re-graft seeded content onto real data) — their first
   // publish becomes No. 001.
   if (state.follows === undefined) state.follows = false;
+  delete state.collab; // a brief earlier build persisted the accepted invite — drop it, credit is per-visit now
+  // Edit-project overrides: applied onto MOCK.project BEFORE any render, so
+  // every consumer (header, share/invite titles, update views, document.title)
+  // picks the edited values up for free.
+  if (state.projectName === undefined) state.projectName = null;
+  if (state.projectDesc === undefined) state.projectDesc = null;
+  if (state.coverId === undefined) state.coverId = null; // cover pick for the listing page
+  if (state.projectName) MOCK.project.name = state.projectName;
+  if (state.projectDesc) MOCK.project.description = state.projectDesc;
   if (!state.updates) { state.updates = []; state.updateCount = 0; state.seenUpdates = []; }
   if (!state.responses) {
     // Fold forward the pre-merge shape: comments (0–1 fractions) and stamps
@@ -1513,16 +1639,32 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     delete state.comments;
     delete state.stamps;
   }
+  // Beats the author creates in-app (media/text) — persisted alongside the
+  // mock ones, newest rendered first.
+  if (!state.added) state.added = [];
   // Prune responses whose beat no longer exists (legacy states deleted beats
   // without cascading) — mirrors the live delete rule on every load.
   {
-    const live = new Set(MOCK.items.filter((i) => !state.deleted.includes(i.id)).map((i) => i.id));
+    const live = new Set([...MOCK.items, ...state.added].filter((i) => !state.deleted.includes(i.id)).map((i) => i.id));
     state.responses = state.responses.filter((r) => live.has(r.mediaId));
   }
   const save = () => { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {} };
 
+  // Featured staging, applied once per browser: a freshly collected project
+  // holds ONE beat — the final — and no history, no discussion, no updates.
+  // The provenance note says exactly where the final came from.
+  if (FEATURED && !state.featuredStaged) {
+    state.featuredStaged = true;
+    state.deleted = MOCK.items.map((i) => i.id).filter((id) => id !== FEATURED_FINAL);
+    state.responses = [];
+    state.updates = []; state.updateCount = 0; state.seenUpdates = [];
+    state.changesOverride = { [FEATURED_FINAL]: FEATURED_PROVENANCE };
+    save();
+  }
+
   /* ---------- ui state (per pageload) ---------- */
   const ui = {
+    collab: null,          // accepted invite { name } — per visit, a refresh clears it
     tool: null,            // 'comment' | 'stamp' | null
     sidebarOpen: false,
     selectedThread: null,
@@ -1535,7 +1677,9 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
   };
 
   /* ---------- derived data ---------- */
-  const items = () => MOCK.items.filter((it) => !state.deleted.includes(it.id));
+  // In-app beats render newest-first, ahead of the mock story.
+  const items = () => [...state.added.slice().reverse(), ...MOCK.items].filter((it) => !state.deleted.includes(it.id));
+  const findItem = (id) => state.added.find((x) => x.id === id) || MOCK.items.find((x) => x.id === id);
   // Every MAINLINE item is a scroll/rail stop — side citations aren't beats,
   // so they must not consume a dash/TOC row (index space must match the DOM).
   const scrollTargets = () => {
@@ -1582,8 +1726,13 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
   function itemDates() {
     const base = new Date('2026-07-15T12:00:00');
     const m = new Map();
-    items().forEach((it, i) => {
-      const d = new Date(base); d.setDate(d.getDate() - i * 3);
+    items().forEach((it) => {
+      // In-app beats carry their real creation date; mock beats keep their
+      // synthetic spread (anchored to their MOCK position so adds never
+      // shift the story's history).
+      const d = it.addedAt
+        ? new Date(it.addedAt)
+        : (() => { const t = new Date(base); t.setDate(t.getDate() - MOCK.items.indexOf(it) * 3); return t; })();
       const day = d.getDate();
       const suf = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
       m.set(it.id, d.toLocaleString('en-US', { month: 'short' }) + ' ' + day + suf);
@@ -1731,7 +1880,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
       wrap.className = 'titem';
       wrap.dataset.id = it.id;
       const num = nums.get(it.id);
-      const label = `Iteration #${num}`;
+      const label = FEATURED && it.id === FEATURED_FINAL ? 'Final' : `Iteration #${num}`;
 
       let inner = '';
       if (it.kind === 'note') {
@@ -1810,7 +1959,6 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
       const changesCard = changesText ? `
         <div class="changes-card">
           <div class="changes-head">
-            <img src="${MOCK.project.icon}" alt="" onerror="__avatarFallback(this, 'W')">
             <h2>Changes</h2>
             <div class="card-actions">
               <button data-act="edit-changes" aria-label="Edit changes">${I.edit}</button>
@@ -1854,6 +2002,59 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
       }
       stack.appendChild(wrap);
     });
+
+    // The featured ask — a READY-TO-FEATURE checklist that ticks itself by
+    // DOING, never by reading (Front's setup-guide pattern, in NCS voice).
+    // Three beats of the designer's job: add the process, say what changed,
+    // publish No. 001 (the handoff). One adaptive primary = the next step.
+    // The card is state, not a nag: it sits where the ask sat, and it's gone
+    // once the job is done.
+    if (FEATURED) {
+      const c1 = items().length > 1; // beats beyond the collected final
+      const c2 = (state.changesOverride[FEATURED_FINAL] ?? '') !== FEATURED_PROVENANCE;
+      const c3 = state.updates.length > 0;
+      const complete = c2 && c3 && (c1 || !FEATURED_CAN_ADD);
+      if (!complete) {
+        const openAdd = () => {
+          const m = $('addMenu'); m.hidden = false;
+          m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+        const editFinal = () => {
+          const beat = document.querySelector('.titem [data-act="edit-changes"]');
+          if (beat) beat.click(); else toast('Open the final’s Changes card to edit its note');
+        };
+        // The primary is always the next step: add → say what changed → publish.
+        const next = (!c1 && FEATURED_CAN_ADD) || (!c2 && !c3 && !c1)
+          ? { label: 'Add your first step', plus: true, act: openAdd }
+          : !c2 ? { label: 'Say what changed', act: editFinal }
+          : { label: 'Publish update No. 001', act: () => openUpdateModal() };
+        const row = (done, label, note) => `
+          <div class="fa-check${done ? ' done' : ''}">
+            <span class="fa-ring">${done ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#FDFDFC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}</span>
+            <span class="fa-label">${label}</span>
+            ${note ? `<span class="fa-note">${note}</span>` : ''}
+          </div>`;
+        const ask = document.createElement('div');
+        ask.className = 'featured-ask';
+        ask.innerHTML = `
+          <span class="sb-eyebrow">Ready to feature</span>
+          <p>This story holds only your final — <b>it’s featured once the process
+          is in</b>. That’s what the community sees: how you work and think.</p>
+          <div class="fa-list">
+            ${row(c1, 'Add the process behind the final', FEATURED_CAN_ADD ? '' : 'uploads disabled in this export')}
+            ${row(c2, 'Say what changed, in your own words')}
+            ${row(c3, 'Publish update No. 001 — the handoff')}
+          </div>
+          <div class="fa-actions">
+            <button class="fa-primary" data-fa-next>
+              ${next.plus ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' : ''}
+              ${next.label}
+            </button>
+          </div>`;
+        ask.querySelector('[data-fa-next]').onclick = next.act;
+        stack.appendChild(ask);
+      }
+    }
 
     renderAllPins();
     renderTallies();
@@ -1940,7 +2141,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     const titem = e.target.closest('.titem');
     if (!btn || !titem) return;
     const id = titem.dataset.id;
-    const it = MOCK.items.find((x) => x.id === id);
+    const it = findItem(id);
     const act = btn.dataset.act;
 
     // Recipient view: authoring actions are hidden by CSS; guard the
@@ -1997,21 +2198,21 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
       });
       e.stopPropagation();
     } else if (act === 'delete') {
-      if (confirm('Delete this iteration? This removes its image or note and can’t be undone.')) {
-        // Provenance must not silently re-home: citations attached to the
-        // deleted beat go back to the moodboard, never to a neighbor the
-        // capture never informed.
-        const { citations } = timelineAttachment();
-        (citations.get(id) || []).forEach((c) => { state.cites[c.id] = ''; });
-        state.deleted.push(id);
-        // Responses die with their beat — threads, replies and stickers must
-        // not haunt the ledger or the storage.
-        state.responses = state.responses.filter((r) => r.mediaId !== id);
-        if (ui.selectedThread && !roots().some((c) => c.id === ui.selectedThread)) ui.selectedThread = null;
-        // An open composer aimed at this beat must not outlive it.
-        if (ui.draftPin && ui.draftPin.mediaId === id) closeSpotComposer();
-        save();
-        buildTimeline(); buildMoodboard(); renderSidebar();
+      // No native confirm() — embeds (including the preview pane this demo is
+      // reviewed in) suppress it, and it's off-language anyway. The trash
+      // arms instead: first tap asks, second tap within 3s deletes.
+      if (btn.dataset.armed) {
+        deleteBeat(id);
+      } else {
+        btn.dataset.armed = '1';
+        btn.classList.add('armed');
+        btn.title = 'Tap again to delete — removes this image or note for good';
+        toast('Tap the trash again to delete this entry');
+        setTimeout(() => {
+          if (!btn.isConnected) return;
+          delete btn.dataset.armed;
+          btn.classList.remove('armed');
+        }, 3000);
       }
     } else if (act === 'toggle-setaside') {
       const box = btn.closest('.setaside');
@@ -2047,7 +2248,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     const titem = e.target.closest('.titem');
     if (!titem) return;
     const id = titem.dataset.id;
-    const it = MOCK.items.find((x) => x.id === id);
+    const it = findItem(id);
     if (changes) {
       const current = state.changesOverride[id] ?? it.changes;
       startInlineEdit(changes, current, (next) => {
@@ -2168,7 +2369,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     $('toc').innerHTML = '<span class="toc-header">Contents</span>' + list.map((it, i) => `
       <button class="toc-item" data-i="${i}">
         <span class="roman">${toRoman(i + 1)}.</span>
-        <span class="lbl">Iteration #${nums.get(it.id)} &middot; ${dates.get(it.id)}</span>
+        <span class="lbl">${FEATURED && it.id === FEATURED_FINAL ? 'Final' : `Iteration #${nums.get(it.id)}`} &middot; ${dates.get(it.id)}</span>
       </button>`).join('');
     $('toc').querySelectorAll('.toc-item').forEach((b) => {
       b.onclick = () => scrollToItem(+b.dataset.i);
@@ -2238,7 +2439,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     const list = scrollTargets();
     const nums = iterationNumbers();
     const active = list[ui.activeIndex];
-    if (active) $('dateChip').textContent = `Iteration #${nums.get(active.id)} · ${MOCK.project.lastUpdatedLabel}`;
+    if (active) $('dateChip').textContent = `${FEATURED && active.id === FEATURED_FINAL ? 'Final' : `Iteration #${nums.get(active.id)}`} · ${MOCK.project.lastUpdatedLabel}`;
     $('toc').querySelectorAll('.toc-item').forEach((b, i) => b.classList.toggle('active', i === ui.activeIndex));
   }
   let scrollRaf = 0;
@@ -2458,6 +2659,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
   function setSidebar(open) {
     ui.sidebarOpen = open;
     $('sidebar').classList.toggle('open', open);
+    $('discToggle').classList.toggle('on', open); // toolbar tile mirrors the rail
   }
 
   /* ==================================================================
@@ -2477,7 +2679,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
       .map((it) => ({
         itemId: it.id,
         img: it.img,
-        label: `Iteration #${nums.get(it.id)}`,
+        label: FEATURED && it.id === FEATURED_FINAL ? 'Final' : `Iteration #${nums.get(it.id)}`,
         qualifier: it.killed ? 'Set aside' : '',
         date: dates.get(it.id),
         body: state.changesOverride[it.id] ?? it.changes ?? '',
@@ -2526,6 +2728,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     save();
     closeUpdateModal();
     renderUpdatesBadge();
+    if (FEATURED) buildTimeline(); // the ready-to-feature checklist ticks its publish step
     toast(`Update ${padNo(no)} published — everyone following the story will see it`);
   }
 
@@ -2818,12 +3021,39 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
   }
 
   /* ==================================================================
-     SHARE — collaborate (edit access) front and center; the view-only
-     link is a quiet one-tap row. Broadcasting to followers is Share
-     update's job, not this modal's.
+     SHARE — an invite link for one designer. Opening it grants nothing:
+     it shows the invite, and ACCEPTING it is what opens edit access,
+     credited by name. Expiry = how long the invite waits. Broadcasting
+     is Share update's job, not this modal's.
      ================================================================== */
   let shareExpiry = '7d';
-  const SHARE_EXPIRY = [['1h', '1 hour'], ['24h', '24 hours'], ['7d', '7 days'], ['30d', '30 days'], ['never', 'No expiry']];
+  // The SENDER decides the invite's mode here, per link — never the page,
+  // never the recipient. Defaults to the current project's own mode.
+  let shareInviteType = FEATURED ? 'featured' : 'cocreator';
+  const SHARE_TYPES = [
+    ['cocreator', 'Co-creator', 'Edits with you — your name stays first'],
+    ['featured', 'Featured designer', 'Becomes the author — it’s their work, you collected it'],
+  ];
+  const SHARE_EXPIRY = [['24h', '24 hours'], ['7d', '7 days'], ['30d', '30 days'], ['never', 'No expiry']];
+  const SB_CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#203E00"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#FDFDFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  // Named invite: the expiry is how long the invite waits for its designer.
+  // Each subtitle converts the duration into the absolute accept-by moment,
+  // never a restatement of the title.
+  function expiryPhrase(v) {
+    if (v === 'never') return 'Waits until accepted';
+    const ms = { '24h': 864e5, '7d': 6048e5, '30d': 2592e6 }[v];
+    const d = new Date(Date.now() + ms);
+    const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+    const days = Math.round((day(d) - day(new Date())) / 864e5);
+    if (days === 0) return `Accept by ${time} today`;
+    if (days === 1) return `Accept by ${time} tomorrow`;
+    const weekday = d.toLocaleDateString([], { weekday: 'long' });
+    if (days < 7) return `Accept by ${weekday} at ${time}`;
+    if (days === 7) return `Accept by next ${weekday}`;
+    return `Accept by ${d.toLocaleDateString([], { month: 'short', day: 'numeric' })}`;
+  }
 
   function openShareModal() {
     $('shareTitle').textContent = MOCK.project.name;
@@ -2834,11 +3064,29 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
 
   function renderShareBody() {
     const body = $('shareBody');
+    const desc = shareInviteType === 'featured'
+      ? `<b>Invite the designer</b> — you collected their final; this link makes them its author. They add the process behind it, credited by name.`
+      : `<b>Invite to collaborate</b> — send the link to one designer: they open it, accept the invite, and edit with you, credited by name.`;
     body.innerHTML = `
-      <p class="sb-desc"><b>Invite to collaborate</b> — anyone with this link can view and edit this project, a co-creator working alongside you.</p>
-      <span class="sb-eyebrow">Link expires after</span>
-      <div class="sb-expiry">${SHARE_EXPIRY.map(([v, l]) => `<button class="sb-exp${v === shareExpiry ? ' on' : ''}" data-exp="${v}">${l}</button>`).join('')}</div>
-      <button class="sb-gen" data-gen>Generate collaboration link</button>`;
+      <p class="sb-desc">${desc}</p>
+      <span class="sb-eyebrow">Invite type</span>
+      <div class="sb-opts">${SHARE_TYPES.map(([v, l, s]) => {
+        const on = v === shareInviteType;
+        return `<button class="sb-opt${on ? ' on' : ''}" data-type="${v}">
+          <span class="sb-opt-text"><span class="t">${l}</span><span class="s">${s}</span></span>
+          ${on ? SB_CHECK : ''}
+        </button>`;
+      }).join('')}</div>
+      <span class="sb-eyebrow">Invite expires</span>
+      <div class="sb-opts">${SHARE_EXPIRY.map(([v, l]) => {
+        const on = v === shareExpiry;
+        return `<button class="sb-opt${on ? ' on' : ''}" data-exp="${v}">
+          <span class="sb-opt-text"><span class="t">${l}</span><span class="s">${expiryPhrase(v)}</span></span>
+          ${on ? SB_CHECK : ''}
+        </button>`;
+      }).join('')}</div>
+      <button class="sb-gen" data-gen>Generate invite link</button>`;
+    body.querySelectorAll('[data-type]').forEach((b) => (b.onclick = () => { shareInviteType = b.dataset.type; renderShareBody(); }));
     body.querySelectorAll('[data-exp]').forEach((b) => (b.onclick = () => { shareExpiry = b.dataset.exp; renderShareBody(); }));
     body.querySelector('[data-gen]').onclick = generateCollabLink;
   }
@@ -2846,29 +3094,293 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
   const shortToken = () => Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6);
 
   function generateCollabLink() {
+    const token = shortToken();
+    // The chosen invite type is stamped INTO the link — the recipient's side
+    // reads the flag, never chooses it.
+    const params = new URLSearchParams(location.search);
+    params.delete('flow');
+    if (shareInviteType === 'featured') params.set('flow', 'featured');
+    const qs = params.toString();
+    renderReceipt({
+      type: shareInviteType,
+      url: `${location.origin}${location.pathname}${qs ? '?' + qs : ''}#invite-${token}`,
+      phrase: expiryPhrase(shareExpiry),
+    });
+  }
+
+  // The receipt echoes the decision — the banner carries the accept-by moment
+  // you chose, not just that creation succeeded.
+  function renderReceipt(link) {
     const body = $('shareBody');
-    const url = `${location.origin}${location.pathname}#invite-${shortToken()}`;
     body.innerHTML = `
-      <p class="sb-desc" style="color:#203E00;margin:6px 0 12px;">${I.checkSm} Collaboration link created</p>
+      <div class="sb-banner">
+        ${SB_CHECK}
+        <span class="sb-banner-text"><span class="t">${link.type === 'featured' ? 'Featured invite created' : 'Co-creator invite created'}</span><span class="s">${esc(link.phrase)}</span></span>
+      </div>
       <span class="sb-eyebrow">Share link</span>
       <div class="sb-linkrow">
-        <input type="text" readonly value="${esc(url)}">
+        <input type="text" readonly value="${esc(link.url)}">
         <button class="sb-copy" data-copy>${I.copy}Copy</button>
       </div>
-      <p class="sb-desc" style="margin:6px 0 0;">Anyone with this link has full edit access.</p>
-      <div class="sb-foot">
+      <p class="sb-desc" style="margin:6px 0 0;">${link.type === 'featured'
+        ? 'Opening shows their collected final — accepting makes them the author, credited by name.'
+        : 'Opening the link shows the invite — accepting it opens full edit access, credited by name.'}</p>
+      <div class="share-foot">
         <button class="sb-again" data-again>Generate another</button>
-        <span></span>
+        <span class="share-foot-actions">
+          <button class="sb-preview-btn" data-preview><svg class="icon" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M20 4l-9 9M20 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Preview</button>
+          <button class="sb-done" data-done>Done</button>
+        </span>
       </div>`;
     const inp = body.querySelector('input');
     body.querySelector('[data-copy]').onclick = (e) => {
       const b = e.currentTarget;
-      navigator.clipboard.writeText(url).then(() => {
+      navigator.clipboard.writeText(link.url).then(() => {
         b.classList.add('done'); b.innerHTML = I.check + 'Copied';
         setTimeout(() => { b.classList.remove('done'); b.innerHTML = I.copy + 'Copy'; }, 1600);
       }).catch(() => inp.select());
     };
     body.querySelector('[data-again]').onclick = renderShareBody;
+    body.querySelector('[data-done]').onclick = closeShareModal;
+    // Real preview: the link opens this same page with the #invite- hash,
+    // which shows the recipient's accept confirmation in a fresh tab.
+    body.querySelector('[data-preview]').onclick = () => window.open(link.url, '_blank');
+  }
+
+  /* ==================================================================
+     INVITE ACCEPT — the recipient side of the share modal's link.
+     Opening the link only shows this confirmation; accepting is what
+     opens edit access and adds the name to the credit line.
+     ================================================================== */
+  function openInviteModal() {
+    $('inviteTitle').textContent = MOCK.project.name;
+    const body = $('inviteBody');
+    // The visitor is already signed in (mock session = MOCK.viewer) — no name
+    // to collect. One sentence of mechanics, one Accept. The featured invite
+    // leads with RECOGNITION: show the collected final before the ask.
+    if (FEATURED) {
+      const fin = MOCK.items.find((i) => i.id === FEATURED_FINAL);
+      body.innerHTML = `
+        <div class="iv-final"><img src="${fin.img}" alt="Your final, as collected"></div>
+        <p class="sb-desc"><b>We saw your work on X</b> — and collected the final into this story. Accepting makes you its author: add the process behind it, credited to ${esc(MOCK.viewer.handle)}.</p>
+        <p class="iv-meta">Collected by NCS · this invite is yours alone</p>
+        <button class="sb-gen" data-accept>Accept — it’s my work</button>
+        <button class="iv-decline" data-decline>Not now</button>`;
+    } else {
+      body.innerHTML = `
+        <p class="sb-desc"><b>${esc(MOCK.me.handle)} invited you to collaborate</b> — accepting opens full edit access to this story, credited to ${esc(MOCK.viewer.handle)}.</p>
+        <p class="iv-meta">Invited by ${esc(MOCK.me.handle)} · this invite is yours alone</p>
+        <button class="sb-gen" data-accept>Accept invite</button>
+        <button class="iv-decline" data-decline>Not now</button>`;
+    }
+    body.querySelector('[data-accept]').onclick = acceptInvite;
+    body.querySelector('[data-decline]').onclick = () => { $('inviteModal').hidden = true; stripInviteHash(); };
+    $('inviteModal').hidden = false;
+  }
+
+  function acceptInvite() {
+    // Per-visit only — never saved. A refresh clears the credit, so the demo
+    // can replay the accept flow endlessly without grafting a collaborator
+    // onto the stored project state.
+    ui.collab = { name: MOCK.viewer.handle };
+    renderCollabCredit();
+    $('inviteModal').hidden = true;
+    stripInviteHash();
+    toast(FEATURED
+      ? 'It’s yours — add the process behind the final'
+      : `You’re in — your edits are credited to ${MOCK.viewer.handle}`);
+  }
+
+  // Declining or dismissing leaves the invite unclaimed — the hash is
+  // stripped so a reload doesn't re-prompt, but the link stays valid.
+  const stripInviteHash = () => history.replaceState(null, '', location.pathname + location.search);
+
+  function renderCollabCredit() {
+    const cc = $('collabCredit');
+    if (!cc) return;
+    if (ui.collab && FEATURED) {
+      // Credit inversion: the featured designer is the author of record —
+      // the byline leads with them, NCS takes the qualifier.
+      $('authorAvatar').src = MOCK.viewer.avatarUrl;
+      $('authorHandle').textContent = MOCK.viewer.handle;
+      cc.textContent = '· collected by NCS';
+      cc.hidden = false;
+    } else if (ui.collab) {
+      cc.textContent = '· with ' + ui.collab.name;
+      cc.hidden = false;
+    } else {
+      $('authorAvatar').src = MOCK.me.avatarUrl;
+      $('authorHandle').textContent = MOCK.me.handle;
+      cc.hidden = true;
+    }
+  }
+
+  /* ==================================================================
+     EDIT PROJECT — our version of the concepts page. Just the identity
+     fields the demo owns; edits persist as overrides on the mock, so
+     every surface that reads MOCK.project stays in sync.
+     ================================================================== */
+  function openEditModal() {
+    const body = $('editBody');
+    body.innerHTML = `
+      <span class="sb-eyebrow">Name</span>
+      <div class="ep-field"><input type="text" id="epName" value="${esc(MOCK.project.name)}"></div>
+      <span class="sb-eyebrow">Description</span>
+      <div class="ep-field"><textarea id="epDesc" rows="3">${esc(MOCK.project.description)}</textarea></div>
+      <span class="sb-eyebrow">People</span>
+      <div class="ep-people" id="epPeople"></div>
+      <span class="sb-eyebrow">Cover image</span>
+      <span class="ep-hint">Fronts this story wherever it’s listed.</span>
+      <div class="ep-cover" id="epCover"></div>
+      <div class="share-foot">
+        <button class="sb-again" data-cancel>Cancel</button>
+        <button class="sb-done" data-save>Save</button>
+      </div>`;
+    renderEpPeople();
+    // Default cover = the newest image (the work's current state) unless the
+    // owner has chosen one.
+    epPendingCover = state.coverId || (items().find((it) => it.img) || {}).id || null;
+    renderEpCover();
+    const name = body.querySelector('#epName');
+    const saveBtn = body.querySelector('[data-save]');
+    name.oninput = () => { saveBtn.disabled = !name.value.trim(); };
+    body.querySelector('[data-cancel]').onclick = closeEditModal;
+    saveBtn.onclick = () => {
+      MOCK.project.name = name.value.trim();
+      MOCK.project.description = body.querySelector('#epDesc').value.trim();
+      state.projectName = MOCK.project.name;
+      state.projectDesc = MOCK.project.description;
+      state.coverId = epPendingCover;
+      save();
+      $('projTitle').textContent = MOCK.project.name;
+      $('projDesc').textContent = MOCK.project.description;
+      document.title = MOCK.project.name + ' · New Craft Society';
+      closeEditModal();
+      toast('Project updated');
+    };
+    $('editModal').hidden = false;
+    name.focus();
+  }
+  const closeEditModal = () => { $('editModal').hidden = true; };
+
+  // ONE delete path for a beat — used by the timeline card action and the
+  // Edit-project images grid. Provenance must not silently re-home:
+  // citations go back to the moodboard, never to a neighbor the capture
+  // never informed; responses die with their beat.
+  function deleteBeat(id) {
+    const { citations } = timelineAttachment();
+    (citations.get(id) || []).forEach((c) => { state.cites[c.id] = ''; });
+    state.deleted.push(id);
+    state.added = state.added.filter((x) => x.id !== id); // in-app beats die fully
+    state.responses = state.responses.filter((r) => r.mediaId !== id);
+    if (ui.selectedThread && !roots().some((c) => c.id === ui.selectedThread)) ui.selectedThread = null;
+    if (ui.draftPin && ui.draftPin.mediaId === id) closeSpotComposer();
+    save();
+    buildTimeline(); buildMoodboard(); renderSidebar();
+  }
+
+  /* ==================================================================
+     ADD BEATS — media and text, created in-app. Images are downscaled to
+     a data URL (localStorage is the only store this demo has); notes open
+     straight into their editor. New beats land at the top of the timeline.
+     ================================================================== */
+  const beatId = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+
+  function scrollToBeat(id) {
+    const el = document.querySelector(`.titem[data-id="${id}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function addMediaBeat(file) {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const MAXD = 1600;
+      const scale = Math.min(1, MAXD / Math.max(img.width, img.height));
+      const cv = document.createElement('canvas');
+      cv.width = Math.max(1, Math.round(img.width * scale));
+      cv.height = Math.max(1, Math.round(img.height * scale));
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      let data;
+      try { data = cv.toDataURL('image/jpeg', 0.82); } catch { toast('Couldn’t read that image'); return; }
+      if (data.length > 2.5e6) { toast('That image is too large to keep in this browser'); return; }
+      const beat = { id: beatId(), kind: 'image', img: data,
+        changes: 'What changed at this step? Double-click to write it.',
+        addedAt: new Date().toISOString() };
+      state.added.push(beat);
+      save();
+      buildTimeline(); buildMoodboard();
+      scrollToBeat(beat.id);
+      toast('Step added — say what changed beside it');
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); toast('Couldn’t read that image'); };
+    img.src = url;
+  }
+
+  function addTextBeat() {
+    const beat = { id: beatId(), kind: 'note',
+      text: 'A note about this step — double-click to write it.',
+      addedAt: new Date().toISOString() };
+    state.added.push(beat);
+    save();
+    buildTimeline(); buildMoodboard();
+    scrollToBeat(beat.id);
+    // Straight into writing — the note is why they clicked Text.
+    const edit = document.querySelector(`.titem[data-id="${beat.id}"] [data-act="edit-note"]`);
+    if (edit) edit.click();
+  }
+
+  // Cover image — pick which of the story's images fronts it on the listing
+  // page (the page before this one). A choice, not a manager: tiles select,
+  // nothing here deletes. The pick is a form field — it persists on Save.
+  let epPendingCover = null;
+  function renderEpCover() {
+    const host = $('epCover');
+    if (!host) return;
+    const media = items().filter((it) => it.img);
+    host.innerHTML = media.map((it) => `
+      <button class="ep-img${it.id === epPendingCover ? ' sel' : ''}" data-cover="${it.id}" aria-label="Use as cover">
+        <img src="${it.img}" alt="" loading="lazy">
+        ${it.id === epPendingCover ? `<span class="ep-check">${SB_CHECK}</span>` : ''}
+      </button>`).join('');
+    host.querySelectorAll('[data-cover]').forEach((b) => (b.onclick = () => {
+      epPendingCover = b.dataset.cover;
+      renderEpCover();
+    }));
+    // Keep the current pick in view inside the grid's own scroll — never by
+    // scrolling the modal body (that would yank the form on open).
+    const sel = host.querySelector('.ep-img.sel');
+    if (sel) host.scrollTop = Math.max(0, sel.offsetTop - host.clientHeight / 2 + sel.offsetHeight / 2);
+  }
+
+  // People: the admin row has NO remove control — that's the rule, not an
+  // omission. Collaborators can always be removed; removal applies instantly
+  // (roles are actions, not form fields — they don't wait for Save).
+  function renderEpPeople() {
+    const host = $('epPeople');
+    if (!host) return;
+    host.innerHTML = `
+      <div class="ep-person">
+        <img src="${MOCK.me.avatarUrl}" alt="" onerror="__avatarFallback(this, 'L')">
+        <span class="ep-who">${esc(MOCK.me.handle)}</span>
+        <span class="ep-role" title="The admin can’t be removed">Admin</span>
+      </div>
+      ${ui.collab ? `
+      <div class="ep-person">
+        <img src="${MOCK.viewer.avatarUrl}" alt="" onerror="__avatarFallback(this, 'Y')">
+        <span class="ep-who">${esc(ui.collab.name)}</span>
+        <span class="ep-role">${FEATURED ? 'Author' : 'Collaborator'}</span>
+        <button class="ep-remove" data-remove-collab>Remove</button>
+      </div>` : `
+      <div class="ep-person ep-empty">No collaborators yet — invite one from + · Collab</div>`}`;
+    const btn = host.querySelector('[data-remove-collab]');
+    if (btn) btn.onclick = () => {
+      ui.collab = null;
+      renderCollabCredit();
+      renderEpPeople();
+      toast('Collaborator removed');
+    };
   }
 
   /* ==================================================================
@@ -2954,6 +3466,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     $('authorAvatar').onerror = () => window.__avatarFallback($('authorAvatar'), MOCK.me.name);
     $('authorAvatar').src = MOCK.me.avatarUrl;
     $('authorHandle').textContent = MOCK.me.handle;
+    renderCollabCredit();
     $('projTitle').textContent = MOCK.project.name;
     $('projDesc').textContent = MOCK.project.description;
 
@@ -3008,6 +3521,7 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     // follow + share updates
     $('followBtn').onclick = () => { state.follows = !state.follows; save(); renderUpdatesBadge(); };
     $('shareUpdateBtn').onclick = openUpdateModal;
+    $('copyViewBtn').onclick = () => copyShare(pageLink(), 'Copied — anyone with the link can view. Notifies no one');
     $('updatesBtn').onclick = () => {
       const p = $('updatesPanel');
       if (p.hidden) { renderUpdatesPanel(); p.hidden = false; } else p.hidden = true;
@@ -3028,29 +3542,33 @@ const STORE_KEY = 'ncs-timeline-demo-v1';
     const um = location.hash.match(/^#u(\d+)$/);
     if (um) openUpdateView(state.updates.find((u) => u.no === +um[1]));
 
+    // #invite- link: show the confirmation — never auto-claim.
+    if (/^#invite-/.test(location.hash)) openInviteModal();
+
     // fake owner pills
     // Add menu (Media / Text / Collab); Collab opens the two-tier share modal.
     $('addPill').onclick = () => { const m = $('addMenu'); m.hidden = !m.hidden; };
     document.querySelectorAll('#addMenu [data-add]').forEach((b) => (b.onclick = () => {
       $('addMenu').hidden = true;
       if (b.dataset.add === 'collab') openShareModal();
-      else toast(`Demo — ${b.dataset.add} upload is disabled here`);
+      else if (b.dataset.add === 'media') $('mediaInput').click();
+      else addTextBeat();
     }));
-    $('svCopy').onclick = () => {
-      const b = $('svCopy');
-      navigator.clipboard.writeText(pageLink()).then(() => {
-        b.classList.add('done');
-        const orig = b.innerHTML;
-        b.innerHTML = I.check + 'Copied — notifies no one';
-        setTimeout(() => { b.classList.remove('done'); b.innerHTML = orig; }, 1800);
-      }).catch(() => toast('Couldn’t reach the clipboard'));
+    $('mediaInput').onchange = (e) => {
+      const f = e.target.files && e.target.files[0];
+      e.target.value = '';
+      if (f) addMediaBeat(f);
     };
     $('shareClose').onclick = closeShareModal;
     $('shareModal').addEventListener('mousedown', (e) => { if (e.target === $('shareModal')) closeShareModal(); });
+    $('inviteClose').onclick = () => { $('inviteModal').hidden = true; stripInviteHash(); };
+    $('inviteModal').addEventListener('mousedown', (e) => { if (e.target === $('inviteModal')) { $('inviteModal').hidden = true; stripInviteHash(); } });
     document.addEventListener('mousedown', (e) => {
       if (!$('addMenu').hidden && !e.target.closest('#addMenu') && !e.target.closest('#addPill')) $('addMenu').hidden = true;
     });
-    $('editPillBtn').onclick = () => toast('Demo export — the project editor isn’t included');
+    $('editPillBtn').onclick = openEditModal;
+    $('editClose').onclick = closeEditModal;
+    $('editModal').addEventListener('mousedown', (e) => { if (e.target === $('editModal')) closeEditModal(); });
 
     // lightbox — a click inside the note text must not dismiss (text can be
     // selected/copied); backdrop and the close button still do.
