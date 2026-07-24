@@ -957,8 +957,6 @@
   .fa-examples { display: flex; align-items: center; gap: 8px; padding: 2px 0 10px 28px; }
   .fa-ex-thumb { width: 46px; height: 34px; border-radius: 6px; object-fit: cover; border: 1px solid #EFEFEC; flex-shrink: 0; }
   .fa-ex-cap { font-size: 11.5px; color: #A0A0A0; line-height: 1.5; }
-  .fa-ex-cap a { color: #7C7C7C; text-decoration: underline; text-underline-offset: 2px; }
-  .fa-ex-cap a:hover { color: #16160E; }
   /* The ownership reassurance — lowers the publish barrier */
   .fa-own { font-size: 12px; color: #A0A0A0; margin-top: 10px; }
   /* Folded: one slim recall bar in the same slot */
@@ -2093,7 +2091,7 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
           const examples = !c1 && FEATURED_CAN_ADD ? `
             <div class="fa-examples">
               ${['m3', 'm12', 'm18'].map((id) => `<img class="fa-ex-thumb" src="${MOCK.items.find((i) => i.id === id).img}" alt="Example process beat" loading="lazy">`).join('')}
-              <span class="fa-ex-cap">What beats look like — sketches, dead ends, in-between states. <a href="${location.pathname}" target="_blank" rel="noopener noreferrer">See a finished story</a></span>
+              <span class="fa-ex-cap">What beats look like — sketches, dead ends, in-between states.</span>
             </div>` : '';
           ask.innerHTML = `
             <div class="fa-head">
