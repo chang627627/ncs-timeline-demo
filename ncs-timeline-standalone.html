@@ -1608,9 +1608,18 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
       }],
     };
   }
+  // FEATURED is a replayable demo: every load re-stages the collected story
+  // from scratch. State lives in memory only — nothing persists — so a
+  // refresh always restarts the flow at the beginning, ready to show again.
+  // The main demo keeps its localStorage persistence.
   let state;
-  try { state = JSON.parse(localStorage.getItem(STORE_KEY)) || seedState(); }
-  catch { state = seedState(); }
+  if (FEATURED) {
+    state = seedState();
+    try { localStorage.removeItem(STORE_KEY); } catch {} // clear pre-replay leftovers
+  } else {
+    try { state = JSON.parse(localStorage.getItem(STORE_KEY)) || seedState(); }
+    catch { state = seedState(); }
+  }
   // Cross-window guard: if another window (possibly running an older build of
   // this file) writes the key, adopt its payload instead of clobbering it
   // back on our next save — last writer wins, no ping-pong.
@@ -1658,7 +1667,7 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
     const live = new Set([...MOCK.items, ...state.added].filter((i) => !state.deleted.includes(i.id)).map((i) => i.id));
     state.responses = state.responses.filter((r) => live.has(r.mediaId));
   }
-  const save = () => { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {} };
+  const save = () => { if (FEATURED) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {} };
 
   // Featured staging, applied once per browser: a freshly collected project
   // holds ONE beat — the final — and no history, no discussion, no updates.
