@@ -971,14 +971,14 @@
                 0 18px 30px rgba(106,106,88,0.07);
   }
   .invite-seal {
-    height: var(--icard); padding: 0; overflow: hidden; display: block; text-align: center;
+    height: var(--icard); padding: 0; overflow: hidden; display: block;
+    text-align: center; cursor: default;   /* the card is not a control */
     background-image:
       linear-gradient(148.8deg, rgba(200,213,187,0.45) 13.36%, rgba(187,210,162,0.45) 88.36%),
       linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.72));
     backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
     transition: opacity 400ms ease, transform 520ms var(--ease-out);
   }
-  .invite-seal:focus-visible { outline: 2px solid #203E00; outline-offset: 3px; }
   /* inner rule — the oldest convention in printed invitations */
   .invite-seal::after {
     content: ''; position: absolute; inset: 14px; pointer-events: none;
@@ -988,7 +988,7 @@
   /* ---- The mark ---- */
   /* Sized and lifted so the registration ring clears the copy at every width */
   .seal-mark {
-    position: absolute; left: 14%; width: 72%; top: 40%;
+    position: absolute; left: 17%; width: 66%; top: 37%;
     transform: translateY(-50%);
     pointer-events: none;
     transition: transform 700ms var(--ease-out), opacity 420ms ease;
@@ -1049,13 +1049,13 @@
   /* Once settled, hover takes over: the overlap brightens and the orbital
      lines open outward from the shared centre. */
   /* hover sends one ripple out of the merged form — nothing recolours */
-  .invite-seal:hover .is-settled .mk-pulse,
-  .invite-seal:focus-visible .is-settled .mk-pulse { animation: mkRipple 1100ms var(--ease-io); }
+  .invite-seal:has(.seal-sub:hover) .is-settled .mk-pulse,
+  .invite-seal:has(.seal-sub:focus-visible) .is-settled .mk-pulse { animation: mkRipple 1100ms var(--ease-io); }
 
   .seal-copy {
     position: absolute; left: 0; right: 0; bottom: 46px;
     /* 12px, not 8 — a 20px headline over 13px body needs the extra air */
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
   }
   .seal-title {
     font-family: 'Eingrantch Mono', 'SF Mono', ui-monospace, monospace;
@@ -1065,21 +1065,24 @@
   }
   .seal-sub {
     /* demoted under the headline so the two stop competing */
-    position: relative; font-size: 13px; line-height: 18px; letter-spacing: -0.26px;
-    color: rgba(32,62,0,0.5); transition: color 220ms ease;
+    /* The house outlined button, verbatim from RetreatConfirmationCard:
+       44px tall, uppercase mono at -1.12px, 1px #203e00, 4px radius,
+       tinted on hover. A styled span, not a nested <button> — the card
+       itself is the control, so nesting one would be invalid. */
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 26px;
+    font-family: 'Eingrantch Mono', 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 14px; letter-spacing: -1.12px; text-transform: uppercase;
+    color: #203E00; border: 1px solid #203E00; border-radius: 4px;
+    background: transparent; transition: background-color 200ms ease;
   }
-  /* A DRAWN rule, not text-decoration: the UA underline spans the full text
-     box at its own weight and offset, so it never matches the card's
-     hairlines. This one is 1px of the same ink, sits where we choose, and
-     wipes in from the left. */
-  .seal-sub::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px;
-    background: rgba(32,62,0,0.42);
-    transform: scaleX(0); transform-origin: left center;
-    transition: transform 460ms var(--ease-out);
-  }
-  .invite-seal:hover .seal-sub::after,
-  .invite-seal:focus-visible .seal-sub::after { transform: scaleX(1); }
+  /* No rule under the action line. The affordance is carried by three
+     things instead: the pointer cursor on the card, the line going to full
+     ink and lifting 1px, and the mark sending out a ripple — so the whole
+     card acknowledges rather than one word wearing a underline. */
+  .seal-sub { cursor: pointer; }
+  .seal-sub:hover, .seal-sub:focus-visible { background: rgba(32,62,0,0.05); }
+  .seal-sub:focus-visible { outline: 2px solid #203E00; outline-offset: 3px; }
   .invite-seal:hover .seal-sub, .invite-seal:focus-visible .seal-sub {
     color: #203E00; text-decoration-color: rgba(32,62,0,0.6);
   }
@@ -1508,15 +1511,15 @@
            warm (someone messaged you), so this beat spends itself on welcome,
            not mechanics: no chrome, no explanation, one gesture. Clarity is
            one click behind it. -->
-      <button class="invite-seal" id="inviteSeal" aria-label="Open your invitation">
+      <div class="invite-seal" id="inviteSeal">
         <!-- Two circular systems merging — generated in inviteMarkSvg() so the
              two circles and their vesica sit on computed geometry. -->
         <span class="seal-mark" id="sealMark"></span>
         <span class="seal-copy">
           <span class="seal-title">You’re in!</span>
-          <span class="seal-sub">Open your invitation</span>
+          <button class="seal-sub" id="inviteOpen" type="button">Open your invitation</button>
         </span>
-      </button>
+      </div>
       <!-- The letter inside: recognition first, then the one deliberate Accept. -->
       <div class="umodal-card share-card invite-letter" id="inviteLetter">
         <div class="share-head">
@@ -3944,7 +3947,7 @@ const NCS_DOTS = [[24.083,8.966,7.333,10.988,1],[42.657,9.182,5.963,6.235,2],[92
     };
     $('shareClose').onclick = closeShareModal;
     $('shareModal').addEventListener('mousedown', (e) => { if (e.target === $('shareModal')) closeShareModal(); });
-    $('inviteSeal').onclick = breakSeal;
+    $('inviteOpen').onclick = breakSeal;
     $('inviteModal').addEventListener('pointermove', inviteParallax);
     $('inviteClose').onclick = closeInvite;
     // No click-the-background-to-dismiss: this is a page, not an overlay.
