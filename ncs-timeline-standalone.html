@@ -931,6 +931,20 @@
   @media (prefers-reduced-motion: reduce) {
     .invite-clouds, .invite-clouds img { animation: none !important; transition: none !important; }
   }
+  /* The page had no arrival at all — it simply switched on, which is why
+     everything "suddenly appeared" no matter how the card was staged.
+     This is the site's own IntroReveal: a #0a0a0a curtain lifting with a
+     20px blur over 400ms on the house ease, content following at their
+     200ms cadence. */
+  .invite-curtain {
+    position: absolute; inset: 0; z-index: 5; pointer-events: none;
+    background: #0A0A0A;
+    animation: curtainLift 400ms cubic-bezier(0.33,1,0.68,1) 100ms both;
+  }
+  @keyframes curtainLift {
+    from { opacity: 1; filter: blur(0px); }
+    to   { opacity: 0; filter: blur(20px); }
+  }
   .invite-grid { position: absolute; inset: 0; pointer-events: none; }
   .invite-grid svg { display: block; width: 100%; height: 100%; }
   /* Accepting doesn't cut — the field fades and the story is behind it. */
@@ -961,6 +975,11 @@
     /* the card does NOT track the pointer — following the cursor reads as
        shake on a static object. Only the cloud plane parallaxes. */
     transition: height 520ms var(--ease-out);
+    /* The arrival lives HERE, not on the seal: the seal's opacity belongs to
+       the opening transition, and an animation with fill:both would win over
+       it. Nothing is drawn before this starts — no frame standing around
+       announcing that a card is coming. */
+    animation: cardArrive 920ms var(--ease-out) 420ms both;
   }
   .invite-seal, .umodal-card.invite-letter {
     position: absolute; top: 0; left: 0; width: 100%; border-radius: 0;
@@ -973,12 +992,33 @@
   .invite-seal {
     height: var(--icard); padding: 0; overflow: hidden; display: block;
     text-align: center; cursor: default;   /* the card is not a control */
+    transition: opacity 400ms ease, transform 520ms var(--ease-out);
+    /* opens as the waitlist card does: an empty 2px white grid frame that
+       becomes the popup (waitlist-v2/MorphRect FRAME_STYLES -> POPUP_STYLES).
+       Their spring is stiffness 800 / damping 45 / mass 0.5 — zeta 1.125, so
+       overdamped: no overshoot, and the colours snap early (0.12s / 0.15s). */
+    animation: cardFrame 900ms var(--ease-out) 480ms both;
+  }
+  .seal-surface {
+    position: absolute; inset: 0; pointer-events: none;
     background-image:
       linear-gradient(148.8deg, rgba(200,213,187,0.45) 13.36%, rgba(187,210,162,0.45) 88.36%),
       linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.72));
     backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-    transition: opacity 400ms ease, transform 520ms var(--ease-out);
+    animation: surfaceIn 820ms ease 520ms both;
   }
+  @keyframes cardArrive {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes cardFrame {
+    from { border-color: rgba(32,62,0,0.06);
+           box-shadow: 0 0 0 rgba(106,106,88,0); }
+    to   { border-color: rgba(32,62,0,0.22);
+           box-shadow: 0 1px 2px rgba(106,106,88,0.07), 0 6px 14px rgba(106,106,88,0.10),
+                       0 18px 30px rgba(106,106,88,0.07); }
+  }
+  @keyframes surfaceIn { from { opacity: 0; } to { opacity: 1; } }
   /* inner rule — the oldest convention in printed invitations */
   .invite-seal::after {
     content: ''; position: absolute; inset: 14px; pointer-events: none;
@@ -1006,22 +1046,27 @@
     transform-box: view-box; transform-origin: 50% 50%;
   }
 
-  /* ---- The 2.4s ritual ----
-     0.0  registration ring settles
-     0.0  two systems travel in from opposite sides, rotating slightly
-     0.2  their orbital lines lean toward the shared centre
-     1.15 the merged circle brightens; the two originals dissolve into it,
+  /* ---- The ritual, ~3.3s ----
+     Staged, not simultaneous: starting everything at 0 made the arrival feel
+     hurried, because the card was still materialising while the circles were
+     already flying. Now the card lands first and the geometry answers it.
+     0.10  the curtain lifts — the page arrives instead of switching on
+     0.42  the card fades and settles up out of nothing (no frame sitting
+           there first announcing it), its border and shadow arriving with it
+     1.02  registration ring settles
+     1.18  two systems travel in from opposite sides, rotating slightly
+     2.34 the merged circle brightens; the two originals dissolve into it,
           so one stroke remains rather than two stacked on each other
-     1.8  one soft ripple leaves the symbol
-     2.0  the copy arrives                                              */
-  .mk-reg   { animation: mkFade 900ms var(--ease-io) both; }
-  .mk-l     { animation: mkOrbitL 1700ms var(--ease-io) both; }
-  .mk-r     { animation: mkOrbitR 1700ms var(--ease-io) both; }
+     2.76 one soft ripple leaves the symbol
+     2.90 the copy arrives                                              */
+  .mk-reg   { animation: mkFade 900ms var(--ease-io) 1020ms both; }
+  .mk-l     { animation: mkOrbitL 1800ms var(--ease-io) 1180ms both; }
+  .mk-r     { animation: mkOrbitR 1800ms var(--ease-io) 1180ms both; }
   /* the merged form: fades up as the two land on each other, then breathes */
-  .mk-core  { animation: mkLens 900ms var(--ease-io) 1150ms both,
-                         mkBreathe 7s ease-in-out 2400ms infinite; }
-  .mk-ripple{ animation: mkRipple 900ms var(--ease-io) 1800ms both; }
-  .seal-copy{ animation: mkCopy 500ms var(--ease-out) 2000ms both; }
+  .mk-core  { animation: mkLens 950ms var(--ease-io) 2340ms both,
+                         mkBreathe 7s ease-in-out 3500ms infinite; }
+  .mk-ripple{ animation: mkRipple 1000ms var(--ease-io) 2760ms both; }
+  .seal-copy{ animation: mkCopy 640ms var(--ease-out) 2900ms both; }
 
   @keyframes mkFade   { from { opacity: 0; } to { opacity: 1; } }
   /* Polar: rotate() sets the angle, translateX() the distance from centre.
@@ -1102,13 +1147,21 @@
   }
   .invite-stage.opened .invite-letter { opacity: 1; transform: none; pointer-events: auto; }
 
-  @media (max-width: 640px) { .invite-stage { --icard: min(400px, 92vw); }
-    .seal-copy { bottom: 32px; } }
+  @media (max-width: 640px) {
+    .invite-stage { --icard: min(400px, 92vw); }
+    .seal-copy { bottom: 32px; gap: 14px; }
+    /* the copy block is a fixed height, so on a small card it eats a far
+       bigger share — the mark has to give up more than a straight scale */
+    .seal-mark { left: 21%; width: 58%; top: 33%; }
+    .seal-title { font-size: 18px; letter-spacing: -1.44px; }
+  }
   /* Reduced motion: land on the merged state, no ritual. */
   @media (prefers-reduced-motion: reduce) {
     .invite-modal, .invite-stage, .invite-seal, .umodal-card.invite-letter,
     .seal-mark { transition: none !important; }
-    .mk-reg, .mk-core, .seal-copy {
+    .invite-curtain { animation: none !important; opacity: 0 !important; }
+    .invite-stage { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .invite-seal, .seal-surface, .mk-reg, .mk-core, .seal-copy {
       animation: none !important; opacity: 1 !important; transform: none !important;
     }
     /* the systems are drawn at the centre, so they need their merged
@@ -1504,6 +1557,7 @@
        accepting is the deliberate act that opens edit access and puts the
        recipient's name in the credit line. -->
   <div class="umodal invite-modal" id="inviteModal" hidden>
+    <div class="invite-curtain" aria-hidden="true"></div>
     <div class="invite-clouds" id="inviteClouds" aria-hidden="true"></div>
     <div class="invite-grid" id="inviteGrid" aria-hidden="true"></div>
     <div class="invite-stage" id="inviteStage">
@@ -1512,6 +1566,7 @@
            not mechanics: no chrome, no explanation, one gesture. Clarity is
            one click behind it. -->
       <div class="invite-seal" id="inviteSeal">
+        <span class="seal-surface"></span>
         <!-- Two circular systems merging — generated in inviteMarkSvg() so the
              two circles and their vesica sit on computed geometry. -->
         <span class="seal-mark" id="sealMark"></span>
@@ -3536,7 +3591,7 @@ const NCS_DOTS = [[24.083,8.966,7.333,10.988,1],[42.657,9.182,5.963,6.235,2],[92
     void mark.offsetWidth;
     clearTimeout(markSettleT);
     // Once the ritual lands, hand the orbital lines over to hover
-    markSettleT = setTimeout(() => mark.classList.add('is-settled'), reducedMotion ? 0 : 2400);
+    markSettleT = setTimeout(() => mark.classList.add('is-settled'), reducedMotion ? 0 : 3800);
     stage.classList.remove('opening', 'opened');
     stage.style.height = '';           // back to the square card (--icard)
     $('inviteModal').classList.remove('leaving');
