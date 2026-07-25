@@ -1175,8 +1175,6 @@
   .iv-final { margin: 6px 0 14px; border-radius: 10px; overflow: hidden; border: 1px solid #EFEFEC; }
   .iv-final img { width: 100%; height: 170px; object-fit: cover; display: block; }
   .iv-meta { font-size: 12px; color: #A0A0A0; margin: 0 0 14px; }
-  .iv-decline { width: 100%; margin-top: 8px; height: 36px; font-size: 13px; color: #7C7C7C; }
-  .iv-decline:hover { color: #16160E; }
   /* The onboarding guide — a quiet card pinned ABOVE the beats, so it never
      drifts away as the process populates below it. Numbered steps tick by
      DOING (any order); every row IS its action — no separate primary;
@@ -1578,13 +1576,7 @@
       <!-- The letter inside: recognition first, then the one deliberate Accept. -->
       <div class="umodal-card share-card invite-letter" id="inviteLetter">
         <div class="share-head">
-          <div>
-            <div class="um-eyebrow">Invite</div>
-            <h2 class="um-title" id="inviteTitle"></h2>
-          </div>
-          <button class="um-x" id="inviteClose" aria-label="Close">
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 7L7 17M7 7l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
+          <h2 class="um-title" id="inviteTitle"></h2>
         </div>
         <div class="share-body" id="inviteBody"></div>
       </div>
@@ -3483,17 +3475,14 @@ const NCS_DOTS = [[24.083,8.966,7.333,10.988,1],[42.657,9.182,5.963,6.235,2],[92
         <div class="iv-final"><img src="${fin.img}" alt="Your final, as collected"></div>
         <p class="sb-desc"><b>We saw your work on X</b> — and collected your final into this story. Accept and it’s yours: your name on it, credited to ${esc(MOCK.viewer.handle)}.</p>
         <p class="iv-meta">Collected by NCS · this invite is yours alone</p>
-        <button class="sb-gen" data-accept>Accept — it’s my work</button>
-        <button class="iv-decline" data-decline>Not now</button>`;
+        <button class="sb-gen" data-accept>Accept — it’s my work</button>`;
     } else {
       body.innerHTML = `
         <p class="sb-desc"><b>${esc(MOCK.me.handle)} invited you to collaborate</b> — accepting opens full edit access to this story, credited to ${esc(MOCK.viewer.handle)}.</p>
         <p class="iv-meta">Invited by ${esc(MOCK.me.handle)} · this invite is yours alone</p>
-        <button class="sb-gen" data-accept>Accept invite</button>
-        <button class="iv-decline" data-decline>Not now</button>`;
+        <button class="sb-gen" data-accept>Accept invite</button>`;
     }
     body.querySelector('[data-accept]').onclick = acceptInvite;
-    body.querySelector('[data-decline]').onclick = closeInvite;
     resealInvite();
     $('inviteModal').hidden = false;
     document.body.style.overflow = 'hidden'; // a takeover owns the screen
@@ -4004,7 +3993,6 @@ const NCS_DOTS = [[24.083,8.966,7.333,10.988,1],[42.657,9.182,5.963,6.235,2],[92
     $('shareModal').addEventListener('mousedown', (e) => { if (e.target === $('shareModal')) closeShareModal(); });
     $('inviteOpen').onclick = breakSeal;
     $('inviteModal').addEventListener('pointermove', inviteParallax);
-    $('inviteClose').onclick = closeInvite;
     // No click-the-background-to-dismiss: this is a page, not an overlay.
     document.addEventListener('mousedown', (e) => {
       if (!$('addMenu').hidden && !e.target.closest('#addMenu') && !e.target.closest('#addPill')) $('addMenu').hidden = true;
