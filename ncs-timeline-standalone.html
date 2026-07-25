@@ -1776,9 +1776,10 @@ const STORE_KEY = FEATURED ? 'ncs-timeline-demo-v1:featured' : 'ncs-timeline-dem
 // The landing page's dot field, lifted from lib/extracted-dots.json in the team
 // repo: [x%, y%, w%, h%, id] against a 5400x3240 source (y flipped to CSS).
 // Edge-cropped sprites are filtered exactly as DotsSystem.tsx does — their
-// hard edges are baked into the PNG — and the rest are held inside the
-// middle 84% (EDGE_MARGIN 0.08) so none sit against the viewport edge.
-const NCS_DOTS = [[28.23,15.531,7.333,10.988,1],[43.832,15.713,5.963,6.235,2],[85.599,16.05,3.037,6.049,3],[56.106,20.561,7.111,14.938,4],[70.137,18.772,2.741,4.877,5],[16.937,27.535,4.222,6.975,6],[75.799,32.02,7.333,16.049,7],[43.552,36.013,7.593,18.889,8],[48.903,35.728,5.815,8.951,10],[24.123,38.346,3.333,5.926,11],[32.928,44.944,4.222,7.315,13],[76.203,45.554,3.926,5.679,14],[62.561,48.172,4.259,10.432,15],[17.248,56.961,4.296,8.889,16],[58.968,58.4,6.889,5.772,17],[86.19,59.294,6.667,7.037,18],[69.763,65.931,9.185,12.469,19],[30.066,66.191,7.778,6.42,20],[36.832,78.039,8.407,15.494,21],[78.63,76.535,5.852,8.951,22],[48.919,78.454,5.407,10.679,23],[11.694,78.622,5.074,7.253,24],[25.912,79.05,6.333,7.778,25],[86.454,81.565,5.815,12.778,26],[63.386,83.898,5.185,10.062,27]];
+// hard edges are baked into the PNG. Positions are otherwise RAW: the
+// original seeds straight from this file and treats EDGE_MARGIN as a
+// per-frame repulsion force, so baking it in here just bunches the field.
+const NCS_DOTS = [[24.083,8.966,7.333,10.988,1],[42.657,9.182,5.963,6.235,2],[92.38,9.583,3.037,6.049,3],[57.269,14.954,7.111,14.938,4],[73.972,12.824,2.741,4.877,5],[10.639,23.256,4.222,6.975,6],[80.713,28.596,7.333,16.049,7],[42.324,33.349,7.593,18.889,8],[48.694,33.009,5.815,8.951,10],[19.194,36.127,3.333,5.926,11],[29.676,43.981,4.222,7.315,13],[81.194,44.707,3.926,5.679,14],[64.954,47.824,4.259,10.432,15],[11.009,58.287,4.296,8.889,16],[60.676,60.0,6.889,5.772,17],[93.083,61.065,6.667,7.037,18],[73.528,68.966,9.185,12.469,19],[26.269,69.275,7.778,6.42,20],[34.324,83.38,8.407,15.494,21],[84.083,81.59,5.852,8.951,22],[48.713,83.873,5.407,10.679,23],[4.398,84.074,5.074,7.253,24],[21.324,84.583,6.333,7.778,25],[93.398,87.577,5.815,12.778,26],[65.935,90.355,5.185,10.062,27]];
 
 </script>
 
@@ -3457,7 +3458,9 @@ const NCS_DOTS = [[28.23,15.531,7.333,10.988,1],[43.832,15.713,5.963,6.235,2],[8
   function buildInviteClouds() {
     const host = $('inviteClouds');
     if (!host || host.childElementCount) return;
-    host.innerHTML = NCS_DOTS.map(([x, y, w, h, id], i) => {
+    // MOBILE_DOT_RATIO 0.6 below MOBILE_BREAKPOINT 768, as the original does
+    const set = innerWidth < 768 ? NCS_DOTS.slice(0, Math.floor(NCS_DOTS.length * 0.6)) : NCS_DOTS;
+    host.innerHTML = set.map(([x, y, w, h, id], i) => {
       const fx = (i % 2 ? 1 : -1) * (0.9 + (i * 0.37) % 1.6);
       const fy = (i % 3 ? -1 : 1) * (0.7 + (i * 0.29) % 1.3);
       const n = String(id).padStart(3, '0');
